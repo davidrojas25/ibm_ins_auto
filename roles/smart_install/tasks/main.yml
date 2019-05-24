@@ -1,0 +1,28 @@
+---
+- name: smart install remediation - remove
+  ios_config:
+    lines:
+      - no vstack
+    save_when: modified  
+  when: smart_install_needed == false
+
+- block:
+
+  - name: smart install remeditation - ACL create
+    ios_config:
+      lines:
+            - permit tcp host "{{ ibd_ip }}" host "{{ ibc_ip }}" #ibd is Smart Install Director ibc is Smart Install Client
+            - deny tcp any any eq 4786
+            - permit ip any any
+          parents: ip access-list extended "{{ acl_name }}"
+          match: exact    
+      save_when: modified    
+
+  - name: smart install remediation - ACL apply 
+    ios_config:
+      lines:
+        ip access-group "{{ acl_name }}" in    
+      parents: interface "{{ interface }}" #normally will be a vlan interface
+      
+  when: smart_install_needed == true        
+    

@@ -1,0 +1,22 @@
+---
+- name: Launch remediation jobs to correct vunerabilities
+  hosts: labcisco
+  connection: network_cli
+  gather_facts: yes
+
+
+  roles:
+  
+  vars:
+    var1: value
+
+  tasks:
+    - name: Identify if vunerability exist
+    #placeholder for task
+
+    - name: Call role for Smart Install Feature Vunerability
+      import_role:
+        name: smart_install
+    - name: Call role for Static Credentail Vunerability     
+      import_role:
+        name: static_cred

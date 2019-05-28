@@ -1,0 +1,55 @@
+---
+- name: Config for routers
+  hosts: routers
+  connection: network_cli
+  gather_facts: no
+  roles:
+    - #insert roels if needed
+
+  vars:
+    var1: value # if needed
+
+  tasks:
+    - name: IOS Facts to gather info
+      ios_facts:
+        gather_subset: all
+      register: cisco_facts  
+
+    - name: Print cisco_facts
+      debug:
+        var: cisco_facts
+
+    - name: Print subset of cisco_facts
+      debug:
+        var: cisco_facts.
+
+    - name: create File.csv with content from fex_conf
+      copy: 
+        content: "{{ inventory_hostname }};{{ item.1.fex }};{{ item.1.description }};{{ item.1.extender_serial }};{{ item.1.extender_model }};{{ item.1.enclosure }};{{ item.1.enclosure_serial }};{{ item.1.fabric_port }}\n"
+        dest: out/file.csv
+      loop: "{{ fex_conf.results | subelements('response') }}"
+      when: item.1.enclosure !=""
+
+    - name: Place facts into jinja2 template
+      src: ./dashboard.j2
+      dest: ./insdashboard.html
+      with_subelements: cisco_facts
+    
+       # Seperate play with windows host to win_copy file to web server
+- name: Config for routers
+  hosts: windows
+  connection: network_cli
+  gather_facts: no
+
+  tasks:
+    - name: Copy html file to webserver
+      win_copy:
+        src: ./insdashboard.html
+        dest: C:\#path to website
+
+
+
+
+
+
+     

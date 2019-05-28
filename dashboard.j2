@@ -1,0 +1,20 @@
+
+
+
+# display csv in html page
+.
+<div id='table-container'></div>
+.
+ 
+<script>
+  CsvToHtmlTable.init({
+    csv_path: 'data/countries.csv', # insert file path here
+    element: 'table-container', 
+    allow_download: true,
+    csv_options: {separator: ';', delimiter: '"'},
+    datatables_options: {"paging": false}
+  });
+</script>
+# https://www.codediesel.com/data/quick-way-to-display-csv-files-as-html-tables/
+
+

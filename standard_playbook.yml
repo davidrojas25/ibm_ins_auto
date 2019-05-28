@@ -1,0 +1,11 @@
+---
+- name: Config for routers
+  hosts: routers
+  connection: network_cli
+  gather_facts: no
+  roles:
+    - fo0 
+
+
+  vars:
+    var1: value

@@ -23,6 +23,15 @@
       debug:
         var: cisco_facts.
 
+    - name: Capture Show Environment Temperature
+      ios_command:
+        lines: show environment temperature
+      register: cisco_temp
+
+    - name: Print out cisco_temp
+      debug:
+        var: cisco_temp        
+
     - name: create File.csv with content from fex_conf
       copy: 
         content: "{{ inventory_hostname }};{{ item.1.fex }};{{ item.1.description }};{{ item.1.extender_serial }};{{ item.1.extender_model }};{{ item.1.enclosure }};{{ item.1.enclosure_serial }};{{ item.1.fabric_port }}\n"

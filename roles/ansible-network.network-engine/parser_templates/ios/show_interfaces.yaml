@@ -24,7 +24,7 @@
   pattern_group:
     - name: match status
       pattern_match:
-        regex: "^\S+ is (\w+)"
+        regex: "^\\S+ is (\\w+\\s*\\w+)"
         content: "{{ item }}"
       register: status
 
@@ -57,6 +57,8 @@
             object:
               - key: name
                 value: "{{ item.name.matches.0 }}"
+              - key: status
+                value: "{{ item.status.matches.0 }}"
               - key: type
                 value: "{{ item.type.matches.0 }}"
               - key: mtu

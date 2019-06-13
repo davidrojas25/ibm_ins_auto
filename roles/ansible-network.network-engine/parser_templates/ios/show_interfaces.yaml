@@ -7,7 +7,7 @@
 
 - name: match sections
   pattern_match:
-    regex: "^(\\S+) is up,"
+    regex: "^(\\S+) is"
     match_all: true
     match_greedy: true
   register: section

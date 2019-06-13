@@ -40,6 +40,30 @@
         content: "{{ item }}"
       register: mtu
 
+    - name: match txload
+      pattern_match:
+        regex: "txload (\\d+\\W\\d+)"
+        content: "{{ item }}"
+      register: txload
+
+    - name: match rxload
+      pattern_match:
+        regex: "rxload (\\d+\\W\\d+)"
+        content: "{{ item }}"
+      register: rxload
+
+    - name: match input errors
+      pattern_match:
+        regex: "(\\d+) input errors"
+        content: "{{ item }}"
+      register: input_errors
+
+    - name: match output errors
+      pattern_match:
+        regex: "(\\d+) output errors"
+        content: "{{ item }}"
+      register: output_errors                  
+
     - name: match description
       pattern_match:
         regex: "Description: (.*)"
@@ -59,6 +83,14 @@
                 value: "{{ item.name.matches.0 }}"
               - key: status
                 value: "{{ item.status.matches.0 }}"
+              - key: txload
+                value: "{{ item.txload.matches.0 }}"
+              - key: rxload
+                value: "{{ item.rxload.matches.0 }}"
+              - key: input_errors
+                value: "{{ item.input_errors.matches.0 }}"
+              - key: output_errors
+                value: "{{ item.output_errors.matches.0 }}"                    
               - key: type
                 value: "{{ item.type.matches.0 }}"
               - key: mtu

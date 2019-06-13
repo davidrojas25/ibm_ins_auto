@@ -24,7 +24,7 @@
   pattern_group:
     - name: match status
       pattern_match:
-        regex: "^\S+ is (\w+)"
+        regex: "^\\S+ is (\\w+\\s*\\w+)"
         content: "{{ item }}"
       register: status
 

@@ -57,6 +57,8 @@
             object:
               - key: name
                 value: "{{ item.name.matches.0 }}"
+              - key: status
+                value: "{{ item.status.matches.0 }}"
               - key: type
                 value: "{{ item.type.matches.0 }}"
               - key: mtu

@@ -20,6 +20,14 @@
         content: "{{ item }}"
       register: name
 
+- name: match interface status
+  pattern_group:
+    - name: match status
+      pattern_match:
+        regex: "^\S+ is (\w+)"
+        content: "{{ item }}"
+      register: status
+
     - name: match hardware
       pattern_match:
         regex: "Hardware is (\\S+),"

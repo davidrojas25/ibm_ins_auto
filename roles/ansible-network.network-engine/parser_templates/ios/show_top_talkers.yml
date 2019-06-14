@@ -20,13 +20,11 @@
         content: "{{ item }}"
       register: srcif
 
-- name: match srcIPAddress
-  pattern_group:
     - name: match srcIPAddress
       pattern_match:
         regex: "\\s(\\d+\\.\\d+\\.\\d+\\.\\d+)\\s+[A-Z]\\w+"
         content: "{{ item }}"
-      register: scrip
+      register: srcip
 
     - name: match dstIPAddress
       pattern_match:

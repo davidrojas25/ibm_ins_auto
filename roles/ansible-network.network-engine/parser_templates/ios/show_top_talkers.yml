@@ -7,7 +7,7 @@
 
 - name: match sections
   pattern_match:
-    regex: "\\s(\\d+.\\d+.\\d+.\\d+)\\s\\w+"
+    regex: "\\\n(\\w+\\/\\d[\\s,\\/][\\s,\\d])"
     match_all: true
     match_greedy: true
   register: section
@@ -16,7 +16,7 @@
   pattern_group:
     - name: match srcif
       pattern_match:
-        regex: "^\\w{2,3}\\d\\/\\d" #onlny works for 2 levels such as fa0/0 not Gig0/0/1
+        regex: "\\\n(\\w+\\/\\d[\\s,\\/][\\s,\\d])" #leaves white spaces at end need to fix
         content: "{{ item }}"
       register: srcif
 
@@ -24,7 +24,7 @@
   pattern_group:
     - name: match srcIPAddress
       pattern_match:
-        regex: "\\s(\\d+\\.\\d+\\.\\d+\\.\\d+)\\s\\w+"
+        regex: "\\s(\\d+\\.\\d+\\.\\d+\\.\\d+)\\s+[A-Z]\\w+"
         content: "{{ item }}"
       register: scrip
 

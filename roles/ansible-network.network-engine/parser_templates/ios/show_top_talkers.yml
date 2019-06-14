@@ -1,0 +1,65 @@
+---
+- name: parser meta data
+  parser_metadata:
+    version: 1.0
+    command: show ip flow top-talkers
+    network_os: ios
+
+- name: match sections
+  pattern_match:
+    regex: "\\s(\\d+.\\d+.\\d+.\\d+)\\s\\w+"
+    match_all: true
+    match_greedy: true
+  register: section
+
+- name: match srcif
+  pattern_group:
+    - name: match srcif
+      pattern_match:
+        regex: "^\\w{2,3}\\d\\/\\d" #onlny works for 2 levels such as fa0/0 not Gig0/0/1
+        content: "{{ item }}"
+      register: srcif
+
+- name: match srcIPAddress
+  pattern_group:
+    - name: match srcIPAddress
+      pattern_match:
+        regex: "\\s(\\d+\\.\\d+\\.\\d+\\.\\d+)\\s\\w+"
+        content: "{{ item }}"
+      register: scrip
+
+    - name: match dstIPAddress
+      pattern_match:
+        regex: "[a-z]+\\s+(\\d+\\.\\d+\\.\\d+\\.\\d+)"
+        content: "{{ item }}"
+      register: dstip
+
+    - name: match packets
+      pattern_match:
+        regex: "\\d+\\.\\d+\\.\\d+\\.\\d+\\s+\\d+\\s\\w+\\s\\w+\\s+(\\d+)"
+        content: "{{ item }}"
+      register: packets
+
+  loop: "{{ section }}"
+  register: talkers
+
+- name: generate json data structure
+  json_template:
+    template:
+      - key: "{{ item.srcif.matches.0 }}"
+        object:
+          - key: config
+            object:
+              - key: Source_Interface
+                value: "{{ item.srcif.matches.0 }}"
+              - key: Source_IP
+                value: "{{ item.srcip.matches.0 }}"
+              - key: Dest_IP
+                value: "{{ item.dstip.matches.0 }}"
+              - key: Packets
+                value: "{{ item.packets.matches.0 }}"
+
+  loop: "{{ talkers }}"
+  export: true
+  #export_as: "{{ export_type }}"
+  register: top_talkers_facts

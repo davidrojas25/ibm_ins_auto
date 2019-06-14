@@ -25,6 +25,7 @@
     total_memory: "{{ total_memory.matches.0 }}"
     used_memory: "{{ used_memory.matches.0 }}"
     free_memory: "{{ free_memory.matches.0 }}"
+    percent_used: "{{ used_memory/total_memory*100 }}"
 
   export: true
   register: processor_memory_facts

@@ -44,7 +44,7 @@
 - name: generate json data structure
   json_template:
     template:
-      - key: "{{ item.srcif.matches.0 }}"
+      - key: "{{ item.srcif.matches.0 }}" #this needs to be an incrimental number 1 thru whatever
         object:
           - key: config
             object:

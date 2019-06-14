@@ -1,0 +1,30 @@
+---
+- name: parser meta data
+  parser_metadata:
+    version: 1.0
+    command: show process memory 
+    network_os: ios
+
+- name: match total memory
+  pattern_match:
+    regex: "Total:\\s+(\\d+)"
+  register: total_memory
+
+- name: match used memory
+  pattern_match:
+    regex: "Used:\\s+(\\d+)"
+  register: used_memory
+
+- name: match free memory
+  pattern_match:
+    regex: "Free:\\s+(\\d+)"
+  register: free_memory
+
+- name: export system facts to playbook
+  set_vars:
+    total_memory: "{{ total_memory.matches.0 }}"
+    used_memory: "{{ used_memory.matches.0 }}"
+    free_memory: "{{ free_memory.matches.0 }}"
+
+  export: true
+  register: processor_memory_facts

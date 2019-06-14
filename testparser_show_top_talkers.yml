@@ -16,7 +16,7 @@
 
     - name: PARSE THE RAW OUTPUT
       command_parser:
-        file: "roles/ansible-network.network-engine/parser_templates/ios/show_top_talkers.yaml"
+        file: "roles/ansible-network.network-engine/parser_templates/ios/show_top_talkers.yml"
         content: "{{ output.stdout[0] }}"
 
     - name: DISPLAY THE PARSED DATA

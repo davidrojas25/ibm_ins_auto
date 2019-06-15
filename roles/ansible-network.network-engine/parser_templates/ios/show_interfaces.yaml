@@ -7,7 +7,7 @@
 
 - name: match sections
   pattern_match:
-    regex: "^(\\S+) is"
+    regex: "([A-Z]\\w+\\d\\/[^ ]+)"
     match_all: true
     match_greedy: true
   register: section
@@ -16,10 +16,10 @@
   pattern_group:
     - name: match name
       pattern_match:
-        regex: "^(\\S+)"
+        regex: "([A-Z]\\w+\\d\\/[^ ]+)"
         content: "{{ item }}"
       register: name 
-      
+
     - name: match status
       pattern_match:
         regex: "^\\S+ is (\\w+\\s*\\w+)"
@@ -28,7 +28,7 @@
 
     - name: match hardware
       pattern_match:
-        regex: "Hardware is (\\S+),"
+        regex: "Hardware is (\\S+\\s\\S+),"
         content: "{{ item }}"
       register: type
 

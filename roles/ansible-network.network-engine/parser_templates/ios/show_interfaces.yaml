@@ -19,9 +19,7 @@
         regex: "^(\\S+)"
         content: "{{ item }}"
       register: name 
-
-- name: match interface status
-  pattern_group:
+      
     - name: match status
       pattern_match:
         regex: "^\\S+ is (\\w+\\s*\\w+)"

@@ -1,0 +1,20 @@
+---
+- name: GENERATE INTERFACE REPORT
+  hosts: rojaslab_routers
+  gather_facts: no
+  connection: network_cli
+
+  tasks:
+    - name: Ping Critial Path
+      ios_ping:
+        dest: 192.168.128.107
+      register: critical_path
+
+    - name: Display Critical Path Info - packets tx
+      debug: critical_path.packets_tx
+
+    - name: Display Critical Path Info - packets rx
+      debug: critical_path.packets_rx
+
+    - name: Display Critical Path Info - packet loss
+      debug: critical_path.packet_loss

@@ -1,0 +1,63 @@
+---
+- name: parser meta data
+  parser_metadata:
+    version: 1.0
+    command: show process cpu sorted
+    network_os: ios
+
+- name: match sections
+  pattern_match:
+    regex: "\\s(\\d+)\\s+\\d+\\s+\\d+"
+    match_all: true
+    match_greedy: true
+  register: section
+
+- name: match PID
+  pattern_group:
+    - name: match PID
+      pattern_match:
+        regex: "\\s(\\d+)\\s+\\d+\\s+\\d+" 
+        content: "{{ item }}"
+      register: pid
+
+    - name: match 1 min
+      pattern_match:
+        regex: "\\d\\s+\\d\\.\\d+%\\s+(\\d\\.\\d+%)"
+        content: "{{ item }}"
+      register: one_min_cpu
+
+    - name: match 5 min
+      pattern_match:
+        regex: "\\d\\s+\\d\\.\\d+%\\s+\\d\\.\\d+%\\s+(\\d\\.\\d+%)"
+        content: "{{ item }}"
+      register: five_min_cpu
+
+    - name: match process name
+      pattern_match:
+        regex: "0\\s([\\w,\\s,-]+)\n"
+        content: "{{ item }}"
+      register: process_name
+
+  loop: "{{ section }}"
+  register: processes
+
+- name: generate json data structure
+  json_template:
+    template:
+      - key: "{{ item.pid.matches.0 }}" 
+        object:
+          - key: config
+            object:
+              - key: pid
+                value: "{{ item.pid.matches.0 }}"
+              - key: process_name
+                value: "{{ item.process_name.matches.0 }}"
+              - key: one_min_cpu
+                value: "{{ item.one_min_cpu.matches.0 }}"
+              - key: five_min_cpu
+                value: "{{ item.five_min_cpu.matches.0 }}"
+
+  loop: "{{ processes }}"
+  export: true
+  #export_as: "{{ export_type }}"
+  register: cpu_facts

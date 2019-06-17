@@ -11,10 +11,13 @@
       register: critical_path
 
     - name: Display Critical Path Info - packets tx
-      debug: critical_path.packets_tx
+      debug: 
+        var: critical_path.packets_tx
 
     - name: Display Critical Path Info - packets rx
-      debug: critical_path.packets_rx
+      debug: 
+        var: critical_path.packets_rx
 
     - name: Display Critical Path Info - packet loss
-      debug: critical_path.packet_loss
+      debug: 
+        var: critical_path.packet_loss

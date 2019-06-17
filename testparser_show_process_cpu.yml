@@ -21,4 +21,4 @@
 
     - name: DISPLAY THE PARSED DATA
       debug:
-        var: processor_memory_facts
+        var: cpu_facts[1] # figure out how to display only 10 or 20 items

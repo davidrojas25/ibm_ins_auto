@@ -4,11 +4,15 @@
   gather_facts: no
   connection: network_cli
 
+  vars:
+    destination_ip: 192.168.128.107
+    num_pings: 20
+
   tasks:
     - name: Ping Critial Path
       ios_ping:
-        dest: 192.168.128.107
-        count: 20
+        dest: "{{ destination_ip }}"
+        count: "{{ num_pings }}"
       register: critical_path
 
     - name: Display Critical Path Info - packets tx

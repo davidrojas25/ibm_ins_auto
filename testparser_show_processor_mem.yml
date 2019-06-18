@@ -1,6 +1,6 @@
 ---
 - name: GENERATE INTERFACE REPORT
-  hosts: rojaslab_routers
+  hosts: rojaslab_network
   gather_facts: no
   connection: network_cli
 

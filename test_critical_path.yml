@@ -6,7 +6,7 @@
 
   vars:
     destination_ip: 192.168.128.107
-    num_pings: 20
+    num_pings: "20"
 
   tasks:
     - name: Ping Critial Path

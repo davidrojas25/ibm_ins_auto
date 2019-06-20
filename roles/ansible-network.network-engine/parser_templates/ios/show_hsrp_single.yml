@@ -1,0 +1,42 @@
+---
+- name: parser meta data
+  parser_metadata:
+    version: 1.0
+    command: show hsrp
+    network_os: ios
+
+- name: match HSRP interface
+  pattern_match:
+    regex: "([A-Z]\\w+\\d\\/[^ ]+)\\s-\\sGroup"
+  register: hsrp_interface
+
+- name: match group
+  pattern_match:
+    regex: "-\\s([A-Z]\\w+\\s\\d+)"
+  register: hsrp_group
+
+- name: match state
+  pattern_match:
+    regex: "State\\sis\\s([A-Z]\\w+)"
+  register: hsrp_state
+
+- name: match virtual IP
+  pattern_match:
+    regex: "Virtual\\sIP\\saddress\\sis\\s(\\d+\\.\\d+\\.\\d+\\.\\d+)"
+  register: hsrp_virtual_ip  
+
+- name: match active router
+  pattern_match:
+    regex: "Active router\\sis\\s([\\w+,.]+)"
+  register: hsrp_active_router  
+
+- name: export hrsp facts to playbook
+  set_vars:
+    hsrp_interface: "{{ hsrp_interface.matches.0 }}"
+    hsrp_group: "{{ hrsp_group.matches.0 }}"
+    hrsp_state: "{{ hsrp_state.matches.0 }}"
+    hsrp_virtual_ip: "{{ hsrp_virtual_ip.matches.0 }}"
+    hsrp_active_router: "{{ hsrp_active_router.matches.0 }}"
+
+  export: true
+  register: hsrp_facts

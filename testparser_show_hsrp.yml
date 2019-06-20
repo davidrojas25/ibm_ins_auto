@@ -4,6 +4,9 @@
   gather_facts: no
   connection: network_cli
 
+  vars:
+    output:'GigabitEthernet0/2 - Group 10\n  State is Active\n    2 state changes, last state change 00:24:12\n  Virtual IP address is 10.1.4.1\n  Active virtual MAC address is 0000.0c07.ac0a\n    Local virtual MAC address is 0000.0c07.ac0a (v1 default)\n  Hello time 3 sec, hold time 10 sec\n    Next hello sent in 1.568 secs\n  Authentication text, string \"3nt3rpr1\"\n  Preemption enabled\n  Active router is local\n  Standby router is 10.1.4.3, priority 100 (expires in 11.136 sec)\n  Priority 105 (configured 105)\n    Track object 1 (unknown)\n  Group name is \"hsrp-Gi0/2-10\" (default)\nGigabitEthernet0/2.105 - Group 20\n  State is Active\n    2 state changes, last state change 00:24:10\n  Virtual IP address is 10.1.5.129\n  Active virtual MAC address is 0000.0c07.ac14\n    Local virtual MAC address is 0000.0c07.ac14 (v1 default)\n  Hello time 3 sec, hold time 10 sec\n    Next hello sent in 2.848 secs\n  Authentication text, string \"3nt3rpr1\"\n  Preemption enabled\n  Active router is local\n  Standby router is 10.1.5.131, priority 100 (expires in 11.376 sec)\n  Priority 105 (configured 105)\n    Track object 1 (unknown)\n  Group name is \"hsrp-Gi0/2.105-20\" (default)'
+
   roles:
     - ansible-network.network-engine
 

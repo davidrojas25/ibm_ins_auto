@@ -1,0 +1,24 @@
+---
+- name: GENERATE INTERFACE REPORT
+  hosts: rojaslab_network
+  gather_facts: no
+  connection: network_cli
+
+  roles:
+    - ansible-network.network-engine
+
+  tasks:
+    - name: CAPTURE SHOW INTERFACES
+      ios_command:
+        commands:
+          - show interface status
+      register: output
+
+    - name: PARSE THE RAW OUTPUT
+      command_parser:
+        file: "roles/ansible-network.network-engine/parser_templates/ios/show_interface_status.yaml"
+        content: "{{ output.stdout[0] }}"
+
+    - name: DISPLAY THE PARSED DATA
+      debug:
+        var: port_facts

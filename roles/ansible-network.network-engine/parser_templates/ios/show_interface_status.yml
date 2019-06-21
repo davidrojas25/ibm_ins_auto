@@ -1,0 +1,101 @@
+---
+- name: parser meta data
+  parser_metadata:
+    version: 1.0
+    command: show interface
+    network_os: ios
+
+- name: match sections
+  pattern_match:
+    regex: "([A-Z]\\w+\\d\\/[^ ]+)"
+    match_all: true
+    match_greedy: true
+  register: section
+
+- name: match interface values
+  pattern_group:
+    - name: match interface name
+      pattern_match:
+        regex: "([A-Z]\\w+\\d\\/[^ ]+)"
+        content: "{{ item }}"
+      register: name 
+
+    - name: match port status
+      pattern_match:
+        regex: "\\s+([n,c]\\w+)\\s+\\d"
+        content: "{{ item }}"
+      register: status
+
+    - name: match vlan
+      pattern_match:
+        regex: "[t,d]\\s+([a-z,\\d]+),"
+        content: "{{ item }}"
+      register: vlan
+#left off here 
+    - name: match mtu
+      pattern_match:
+        regex: "MTU (\\d+)"
+        content: "{{ item }}"
+      register: mtu
+
+    - name: match txload
+      pattern_match:
+        regex: "txload (\\d+\\W\\d+)"
+        content: "{{ item }}"
+      register: txload
+
+    - name: match rxload
+      pattern_match:
+        regex: "rxload (\\d+\\W\\d+)"
+        content: "{{ item }}"
+      register: rxload
+
+    - name: match input errors
+      pattern_match:
+        regex: "(\\d+) input errors"
+        content: "{{ item }}"
+      register: input_errors
+
+    - name: match output errors
+      pattern_match:
+        regex: "(\\d+) output errors"
+        content: "{{ item }}"
+      register: output_errors                  
+
+    - name: match description
+      pattern_match:
+        regex: "Description: (.*)"
+        content: "{{ item }}"
+      register: description
+  loop: "{{ section }}"
+  register: interfaces
+
+- name: generate json data structure
+  json_template:
+    template:
+      - key: "{{ item.name.matches.0 }}"
+        object:
+          - key: config
+            object:
+              - key: name
+                value: "{{ item.name.matches.0 }}"
+              - key: status
+                value: "{{ item.status.matches.0 }}"
+              - key: txload
+                value: "{{ item.txload.matches.0 }}"
+              - key: rxload
+                value: "{{ item.rxload.matches.0 }}"
+              - key: input_errors
+                value: "{{ item.input_errors.matches.0 }}"
+              - key: output_errors
+                value: "{{ item.output_errors.matches.0 }}"                    
+              - key: type
+                value: "{{ item.type.matches.0 }}"
+              - key: mtu
+                value: "{{ item.mtu.matches.0 }}"
+              - key: description
+                value: "{{ item.description.matches.0 }}"
+  loop: "{{ interfaces }}"
+  export: true
+  #export_as: "{{ export_type }}"
+  register: interface_facts

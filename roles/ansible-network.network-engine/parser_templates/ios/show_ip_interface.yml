@@ -1,0 +1,139 @@
+---
+- name: parser meta data
+  parser_metadata:
+    version: 1.0
+    command: show ip interface
+    network_os: ios
+
+- name: match sections
+  pattern_match:
+    regex: "([A-Z]\\w+\\d\\/[^ ]+)"
+    match_all: true
+    match_greedy: true
+  register: section
+
+- name: match interfaces
+  pattern_group:
+    - name: match interface name
+      pattern_match:
+        regex: "([A-Z]\\w+\\d\\/[^ ]+)"
+        content: "{{ item }}"
+      register: name
+
+    - name: match interface physical status
+      pattern_match:
+        regex: "[A-Z]\\w+\\d\\/[^ ]+\\sis\\s(\\w+),"
+        content: "{{ item }}"
+      register: status_physical
+
+    - name: match interface line protocol
+      pattern_match:
+        regex: "line\\sprotocol\\sis\\s(\\w+)"
+        content: "{{ item }}"
+      register: status_protocol
+
+    - name: match IP address
+      pattern_match:
+        regex: "Internet\\saddress\\sis\\s(\\d+\\.\\d+\\.\\d+\\.\\d+)"
+        content: "{{ item }}"
+      register: ip_address
+
+    - name: match mtu
+      pattern_match:
+        regex: "MTU\\sis\\s(\\d+)"
+        content: "{{ item }}"
+      register: mtu
+
+    - name: match ip helper
+      pattern_match:
+        regex: "Helper\\saddress\\sis\\s([\\d+\\.\\d+\\.\\d+\\.\\d+, not set]+)"
+        content: "{{ item }}"
+      register: ip_helper
+
+    - name: match ip directed broadcast
+      pattern_match:
+        regex: "Directed\\sbroadcast\\sforwarding\\sis\\s(\\w+)"
+        content: "{{ item }}"
+      register: directed_broadcast 
+
+    - name: match outgoing access list
+      pattern_match:
+        regex: "Outgoing\\saccess\\slist\\sis\\s([\\w+,not set]+)"
+        content: "{{ item }}"
+      register: out_access_list
+
+    - name: match ip inbound access list
+      pattern_match:
+        regex: "Inbound\\saccess\\slist\\sis\\s([\\w+,not set]+)"
+        content: "{{ item }}"
+      register: directed_broadcast
+
+    - name: match Proxy ARP
+      pattern_match:
+        regex: "\\s\\sProxy\\sARP\\sis\\s(\\w+)"
+        content: "{{ item }}"
+      register: proxy_arp
+
+    - name: match local proxy ARP
+      pattern_match:
+        regex: "Local Proxy\\sARP\\sis\\s(\\w+)"
+        content: "{{ item }}"
+      register: local_proxy_arp   
+
+    - name: match split horizon
+      pattern_match:
+        regex: "Split horizon\\sis\\s(\\w+)"
+        content: "{{ item }}"
+      register: split_horizon
+
+    - name: match ip fast switching
+      pattern_match:
+        regex: "IP\\sfast\\sswitching\\sis\\s(\\w+)"
+        content: "{{ item }}"
+      register: ip_fast_switching
+
+    - name: match IP Flow switching
+      pattern_match:
+        regex: "IP Flow switching\\sis\\s(\\w+)"
+        content: "{{ item }}"
+      register: ip_flow_switching                                       
+
+    - name: match IP CEF switching
+      pattern_match:
+        regex: "IP CEF switching\\sis\\s(\\w+)"
+        content: "{{ item }}"
+      register: ip_cef_switching
+
+    - name: match IP multicast fast switching
+      pattern_match:
+        regex: "IP multicast fast switching\\sis\\s(\\w+)"
+        content: "{{ item }}"
+      register: local_proxy_arp            
+
+  loop: "{{ section }}"
+  register: interfaces
+
+- name: generate json data structure
+  json_template:
+    template:
+      - key: "{{ item.port_name.matches.0 }}"
+        object:
+          - key: config
+            object:
+              - key: port_name
+                value: "{{ item.port_name.matches.0 }}"
+              - key: status
+                value: "{{ item.status.matches.0 }}"
+              - key: vlan
+                value: "{{ item.vlan.matches.0 }}"
+              - key: duplex
+                value: "{{ item.duplex.matches.0 }}"
+              - key: speed
+                value: "{{ item.speed.matches.0 }}"
+              - key: type
+                value: "{{ item.type.matches.0 }}"                    
+
+  loop: "{{ interfaces }}"
+  export: true
+  #export_as: "{{ export_type }}"
+  register: ip_interface_facts

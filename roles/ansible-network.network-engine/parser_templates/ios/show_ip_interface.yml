@@ -66,7 +66,7 @@
       pattern_match:
         regex: "Inbound\\saccess\\slist\\sis\\s([\\w+,not set]+)"
         content: "{{ item }}"
-      register: directed_broadcast
+      register: in_access_list
 
     - name: match Proxy ARP
       pattern_match:
@@ -108,7 +108,43 @@
       pattern_match:
         regex: "IP multicast fast switching\\sis\\s(\\w+)"
         content: "{{ item }}"
-      register: local_proxy_arp            
+      register: ip_multicast_fast_switching  
+
+    - name: match IP output packet accounting
+      pattern_match:
+        regex: "IP output packet accounting\\sis\\s(\\w+)"
+        content: "{{ item }}"
+      register: ip_packet_accounting   
+
+    - name: match Policy Routing
+      pattern_match:
+        regex: "Policy routing\\sis\\s(\\w+)"
+        content: "{{ item }}"
+      register: policy_routing 
+
+    - name: match NAT
+      pattern_match:
+        regex: "Network address translation\\sis\\s(\\w+)"
+        content: "{{ item }}"
+      register: nat    
+
+    - name: match BGP Policy Mapping
+      pattern_match:
+        regex: "BGP Policy Mapping\\sis\\s(\\w+)"
+        content: "{{ item }}"
+      register: bgp_policy_mapping
+
+    - name: match WCCP Redirect outbound
+      pattern_match:
+        regex: "WCCP Redirect outbound\\sis\\s(\\w+)"
+        content: "{{ item }}"
+      register: wccp_redirect_outbound
+
+    - name: match WCCP Redirect inbound
+      pattern_match:
+        regex: "WCCP Redirect inbound\\sis\\s(\\w+)"
+        content: "{{ item }}"
+      register: wccp_redirect_inbound          
 
   loop: "{{ section }}"
   register: interfaces
@@ -116,22 +152,54 @@
 - name: generate json data structure
   json_template:
     template:
-      - key: "{{ item.port_name.matches.0 }}"
+      - key: "{{ item.name.matches.0 }}"
         object:
           - key: config
             object:
-              - key: port_name
-                value: "{{ item.port_name.matches.0 }}"
-              - key: status
-                value: "{{ item.status.matches.0 }}"
-              - key: vlan
-                value: "{{ item.vlan.matches.0 }}"
-              - key: duplex
-                value: "{{ item.duplex.matches.0 }}"
-              - key: speed
-                value: "{{ item.speed.matches.0 }}"
-              - key: type
-                value: "{{ item.type.matches.0 }}"                    
+              - key: Interface_name
+                value: "{{ item.name.matches.0 }}"
+              - key: status_physical
+                value: "{{ item.status_physical.matches.0 }}"
+              - key: status_protocol
+                value: "{{ item.status_protocol.matches.0 }}"
+              - key: ip_address
+                value: "{{ item.ip_address.matches.0 }}"
+              - key: mtu
+                value: "{{ item.mtu.matches.0 }}"
+              - key: ip_helper
+                value: "{{ item.ip_helper.matches.0 }}" 
+              - key: directed_broadcast
+                value: "{{ item.directed_broadcast.matches.0 }}"
+              - key: out_access_list
+                value: "{{ item.out_access_list.matches.0 }}"
+              - key: in_access_list
+                value: "{{ item.in_access_list.matches.0 }}"
+              - key: proxy_arp
+                value: "{{ item.proxy_arp.matches.0 }}"
+              - key: local_proxy_arp
+                value: "{{ item.local_proxy_arp.matches.0 }}"
+              - key: split_horizon
+                value: "{{ item.split_horizon.matches.0 }}"   
+              - key: ip_fast_switching
+                value: "{{ item.ip_fast_switching.matches.0 }}"
+              - key: ip_flow_switching
+                value: "{{ item.ip_flow_switching.matches.0 }}"
+              - key: ip_cef_switching
+                value: "{{ item.ip_cef_switching.matches.0 }}" 
+              - key: ip_multicast_fast_switching
+                value: "{{ item.ip_multicast_fast_switching.matches.0 }}"
+              - key: ip_packet_accounting
+                value: "{{ item.ip_packet_accounting.matches.0 }}"
+              - key: policy_routing
+                value: "{{ item.policy_routing.matches.0 }}"
+              - key: nat
+                value: "{{ item.nat.matches.0 }}"
+              - key: bgp_policy_mapping
+                value: "{{ item.bgp_policy_mapping.matches.0 }}"
+              - key: wccp_redirect_outbound
+                value: "{{ item.wccp_redirect_outbound.matches.0 }}"   
+              - key: wccp_redirect_inbound
+                value: "{{ item.wccp_redirect_inbound.matches.0 }}"                                                               
 
   loop: "{{ interfaces }}"
   export: true

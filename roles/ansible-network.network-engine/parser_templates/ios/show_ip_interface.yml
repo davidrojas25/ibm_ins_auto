@@ -64,7 +64,7 @@
 
     - name: match ip inbound access list
       pattern_match:
-        regex: "Inbound\\saccess\\slist\\sis\\s([\\w+,not set]+)"
+        regex: "Inbound\\s+access\\slist\\sis\\s([\\w+,not set]+)"
         content: "{{ item }}"
       register: in_access_list
 

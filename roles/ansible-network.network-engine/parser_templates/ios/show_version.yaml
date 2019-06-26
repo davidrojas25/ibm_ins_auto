@@ -35,9 +35,9 @@
     regex: "with \\w*/(\\S+) bytes of memory"
   register: free_mem
 
-- name: match reload type # need help here
+- name: match reload type 
   pattern_match:
-    regex: "with \\w*/(\\S+) bytes of memory"
+    regex: "Last reload type.\\s(.*)" #good example of any num of charater not end of line
   register: reload_type  
 
 - name: match config register

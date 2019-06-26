@@ -30,7 +30,7 @@
       pattern_match:
         regex: "[\\d,\\-]\\s+(\\w+\\.\\w+\\.\\w+)"
         content: "{{ item }}"
-      register: type
+      register: hardware_address
 
     - name: match hardware address type
       pattern_match:
@@ -40,7 +40,7 @@
 
     - name: match interface
       pattern_match:
-        regex: "([A-Z]\\w+\\d\\/\\d[\\s,\\d]*[\\/,\\s]*[\\d,\\s]*)"
+        regex: "([A-Z]\\w+\\d\\/\\d[\\s,\\d]*[\\/,\\s]*[\\d,\\s]*|[A-Z][a-z]\\w+\\d+)"
         content: "{{ item }}"
       register: interface
 
@@ -59,7 +59,7 @@
               - key: age
                 value: "{{ item.age.matches.0 }}"
               - key: type
-                value: "{{ item.type.matches.0 }}"
+                value: "{{ item.hardware_address.matches.0 }}"
               - key: address_type
                 value: "{{ item.address_type.matches.0 }}"
               - key: interface

@@ -12,7 +12,7 @@
 
 - name: match model
   pattern_match:
-    regex: "^Cisco (.+) \\(revision"
+    regex: "^[C,c]isco\\s(\\S+)"
   register: model
 
 - name: match image

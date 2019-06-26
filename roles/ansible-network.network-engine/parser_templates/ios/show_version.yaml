@@ -12,7 +12,7 @@
 
 - name: match model
   pattern_match:
-    regex: "^[C,c]isco\\s(\\S+)"
+    regex: "^[C,c]isco\\s((?!IOS)\\S+)"
   register: model
 
 - name: match image

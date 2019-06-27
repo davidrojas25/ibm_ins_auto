@@ -23,6 +23,10 @@
   loop: "{{ section }}"
   register: entries
 
+- name: display entries
+  debug:
+    var: entries
+
 - name: template entries
   json_template:
     template:

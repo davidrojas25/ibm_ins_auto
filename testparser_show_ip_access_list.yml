@@ -21,4 +21,4 @@
 
     - name: DISPLAY THE PARSED DATA
       debug:
-        var: access_list_dict
+        var: entries

@@ -20,7 +20,7 @@
         content: "{{ item }}"
         match_all: true
       register: entry
-  loop: "{{ access-list }}"
+  loop: "{{ section }}"
   register: entries
 
 - name: template entries

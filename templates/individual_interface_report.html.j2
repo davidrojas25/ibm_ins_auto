@@ -4,10 +4,10 @@
                
 {% for port in port_facts %}       
     {% for name in port %}  
-                   
+         <tr>          
              <td> {{ port[name].config.port_name }} </td>    
              <td> {{ port[name].config.status }} </td>
-                  
+         </tr>         
     {% endfor %}                  
 {% endfor %}
                

@@ -1,4 +1,6 @@
       </table>
+
+      <button>Print me</button>
 <script>
 function myFunction() {
   var input, filter, table, tr, td, i, txtValue;
@@ -18,6 +20,18 @@ function myFunction() {
     }       
   }
 }
+function printData()
+{
+   var divToPrint=document.getElementById("myTable");
+   newWin= window.open("");
+   newWin.document.write(divToPrint.outerHTML);
+   newWin.print();
+   newWin.close();
+}
+
+$('button').on('click',function(){
+printData();
+})
 </script>
    </body>
 </html>

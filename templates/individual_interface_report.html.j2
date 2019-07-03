@@ -2,7 +2,7 @@
             <td>{{ inventory_hostname }}</td>
             <td>
                <ul>
-{% for port in port_facts.config.port_name %}
+{% for port in port_facts[port].config.port_name %}
                   <li>{{ port_facts.config.value.port_name }}</li>
                   <li>{{ port_facts.config.value.status }}</li>
 {% endfor %}

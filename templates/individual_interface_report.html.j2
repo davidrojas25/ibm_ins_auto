@@ -3,7 +3,7 @@
             <td>
                <ul>
 {% for port in port_facts %}
-    {% for name in port_facts[port] %}
+    {% for name in port_facts[port] | dict2items %}
                   <li>{{ port[name].config.port_name }}</li>
                   <li>{{ port[name].config.status }}</li>
     {% endfor %}              

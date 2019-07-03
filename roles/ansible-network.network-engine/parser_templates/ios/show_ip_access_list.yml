@@ -25,7 +25,7 @@
 
 - name: display entries
   debug:
-    var: entries  
+    var: entries
 
 - name: template entries
   json_template:

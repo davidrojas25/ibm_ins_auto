@@ -51,7 +51,7 @@
 
     - name: Create Interim Report
       template:
-        src: consolidated_interface_report.html.j2
+        src: consolidated_show_version_report.html.j2
         dest: "reports/Consolidated_Show_Version_Report.html"
       delegate_to: localhost
       run_once: yes

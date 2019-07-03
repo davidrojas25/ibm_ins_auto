@@ -1,13 +1,16 @@
          <tr>
             <td>{{ inventory_hostname }}</td>
             <td>
-               <ul>
+               
 {% for port in port_facts %}
+                  {{ port[name].config.port_name }}
+            </td>     
     {% for name in port %}   
-                  <li>{{ port[name].config.port_name }}</li>
-                  <li>{{ port[name].config.status }}</li>
+             <td>     
+                  {{ port[name].config.status }}
+             </td>     
     {% endfor %}                  
 {% endfor %}
-               </ul>
-            </td>
+               
+            
          </tr>

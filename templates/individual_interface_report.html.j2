@@ -4,8 +4,8 @@
                <ul>
 {% for port in port_facts %}
     {% for name in port_facts[port] %}
-                  <li>{{ port_facts[port][name].config.port_name }}</li>
-                  <li>{{ port_facts[port][name].config.status }}</li>
+                  <li>{{ port[name].config.port_name }}</li>
+                  <li>{{ port[name].config.status }}</li>
     {% endfor %}              
 {% endfor %}
                </ul>

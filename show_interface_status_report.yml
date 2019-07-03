@@ -1,0 +1,110 @@
+---
+- name: GENERATE INTERFACE REPORT
+  hosts: rojaslab_network
+  gather_facts: no
+  connection: network_cli
+
+  roles:
+    - ansible-network.network-engine
+
+  tasks:
+    - name: CAPTURE SHOW INTERFACES
+      ios_command:
+        commands:
+          - show interface status
+      register: output
+
+    - name: PARSE THE RAW OUTPUT
+      command_parser:
+        file: "roles/ansible-network.network-engine/parser_templates/ios/show_interface_status.yml"
+        content: "{{ output.stdout[0] }}"
+
+    - name: DISPLAY THE PARSED DATA
+      debug:
+        var: port_facts
+
+    - name: Clean Up Reports Directory if it exists
+      file:
+        path: reports
+        state: absent
+      delegate_to: localhost
+      run_once: yes
+
+    - name: Create Reports Directory
+      file:
+        path: reports
+        state: directory
+        mode: 0755
+      delegate_to: localhost
+      run_once: yes
+
+    - name: Template Rendering
+      template:
+        src: templates/individual_interface_report.html.j2
+        dest: "reports/z{{ inventory_hostname }}_interim_report.html"
+      delegate_to: localhost
+
+    - name: Create Interim Report
+      template:
+        src: consolidated_interface_report.html.j2
+        dest: "reports/Consolidated_Interface_Report.html"
+      delegate_to: localhost
+      run_once: yes
+
+    - name: Consolidate Interim Report
+      assemble:
+        src: reports/
+        dest: reports/Consolidated_Interface_Report.html
+      delegate_to: localhost
+      run_once: yes
+
+    - name: Generate Remaining Portion of Report
+      template:
+        src: consolidated_vms_report_last_block.html.j2
+        dest: "reports/consolidated_interface_last_block.html"
+      delegate_to: localhost
+      run_once: yes
+
+    - name: Get the List of Interim Reports
+      find:
+        paths: reports/
+        patterns: '*_interim_report.html'
+      register: interim_reports_to_delete
+      delegate_to: localhost
+      run_once: yes
+
+    - name: Clean Up Interim Reports
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ interim_reports_to_delete.files }}"
+      delegate_to: localhost
+      run_once: yes
+
+    - name: Consolidate Final Report
+      assemble:
+        src: reports/
+        dest: reports/Consolidated_Interface_Report.html
+      delegate_to: localhost
+      run_once: yes
+
+    - name: Final Clean Up
+      file:
+        path: reports/consolidated_interface_last_block.html
+        state: absent
+      delegate_to: localhost
+      run_once: yes
+
+    - name: Send Email with Report
+      mail:
+        host: smtp.gmail.com
+        port: 587
+        username: "{{ gmail_account }}"
+        password: "{{ gmail_account_password }}"
+        to: "{{ sendto_email }}"
+        subject: "Ansible Report"
+        body: "The list of required Windows Update for the Windows VMs can be found in the attached file"
+        attach:
+        - reports/Consolidated_VMs_Report.html
+      delegate_to: localhost
+      run_once: yes        

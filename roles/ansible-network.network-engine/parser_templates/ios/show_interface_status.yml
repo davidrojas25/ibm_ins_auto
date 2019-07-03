@@ -22,13 +22,13 @@
 
     - name: match port status
       pattern_match:
-        regex: "\\s+([n,c]\\w+)\\s+\\d"
+        regex: "\\s+([n,c]\\w+)\\s+"
         content: "{{ item }}"
       register: status
 
     - name: match vlan
       pattern_match:
-        regex: "[t,d]\\s+([a-z,\\d]+),"
+        regex: "[t,d]\\s+([a-z,\\d]+)"
         content: "{{ item }}"
       register: vlan
 

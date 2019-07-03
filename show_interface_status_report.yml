@@ -4,8 +4,12 @@
   gather_facts: no
   connection: network_cli
 
+  vars:
+    gmail_account:David Rojas <colombianclimber@gmail.com>
+    gmail_account_password:Zapata99!
+  
   roles:
-    - ansible-network.network-engine
+    - ansible-network.network-engine  
 
   tasks:
     - name: CAPTURE SHOW INTERFACES

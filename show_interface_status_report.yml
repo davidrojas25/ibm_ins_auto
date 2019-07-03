@@ -60,7 +60,7 @@
 
     - name: Generate Remaining Portion of Report
       template:
-        src: consolidated_vms_report_last_block.html.j2
+        src: consolidated_interface_last_block.html.j2
         dest: "reports/consolidated_interface_last_block.html"
       delegate_to: localhost
       run_once: yes

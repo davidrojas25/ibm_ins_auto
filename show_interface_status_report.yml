@@ -21,7 +21,7 @@
 
     - name: DISPLAY THE PARSED DATA
       debug:
-        var: port_facts
+        var: port_facts[2]["Fa0/3"].config.port_name
 
     - name: Clean Up Reports Directory if it exists
       file:

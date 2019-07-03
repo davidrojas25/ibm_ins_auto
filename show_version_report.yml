@@ -8,25 +8,25 @@
     gmail_account: "rojasautolab@gmail.com"
     gmail_account_password: "Zapata99!"
     sendto_email: "David Rojas <rojasautolab@gmail.com>"
-  
+
   roles:
-    - ansible-network.network-engine  
+    - ansible-network.network-engine
 
   tasks:
-    - name: CAPTURE SHOW INTERFACES
+    - name: CAPTURE SHOW VERSION
       ios_command:
         commands:
-          - show interface status
+          - show version
       register: output
 
     - name: PARSE THE RAW OUTPUT
       command_parser:
-        file: "roles/ansible-network.network-engine/parser_templates/ios/show_interface_status.yml"
+        file: "roles/ansible-network.network-engine/parser_templates/ios/show_version.yaml"
         content: "{{ output.stdout[0] }}"
 
     - name: DISPLAY THE PARSED DATA
       debug:
-        var: port_facts[2]["Fa0/3"].config.port_name
+        var: system_facts
 
     - name: Clean Up Reports Directory if it exists
       file:
@@ -45,28 +45,28 @@
 
     - name: Template Rendering
       template:
-        src: templates/individual_interface_report.html.j2
+        src: templates/individual_show_version_report.html.j2
         dest: "reports/z{{ inventory_hostname }}_interim_report.html"
       delegate_to: localhost
 
     - name: Create Interim Report
       template:
         src: consolidated_interface_report.html.j2
-        dest: "reports/Consolidated_Interface_Report.html"
+        dest: "reports/Consolidated_Show_Version_Report.html"
       delegate_to: localhost
       run_once: yes
 
     - name: Consolidate Interim Report
       assemble:
         src: reports/
-        dest: reports/Consolidated_Interface_Report.html
+        dest: reports/Consolidated_Show_Version_Report.html
       delegate_to: localhost
       run_once: yes
 
     - name: Generate Remaining Portion of Report
       template:
-        src: consolidated_interface_last_block.html.j2
-        dest: "reports/consolidated_interface_last_block.html"
+        src: consolidated_show_version_last_block.html.j2
+        dest: "reports/consolidated_show_version_last_block.html"
       delegate_to: localhost
       run_once: yes
 
@@ -89,13 +89,13 @@
     - name: Consolidate Final Report
       assemble:
         src: reports/
-        dest: reports/Consolidated_Interface_Report.html
+        dest: reports/Consolidated_Show_Version_Report.html
       delegate_to: localhost
       run_once: yes
 
     - name: Final Clean Up
       file:
-        path: reports/consolidated_interface_last_block.html
+        path: reports/consolidated_show_version_last_block.html
         state: absent
       delegate_to: localhost
       run_once: yes
@@ -107,9 +107,9 @@
         username: "{{ gmail_account }}"
         password: "{{ gmail_account_password }}"
         to: "{{ sendto_email }}"
-        subject: "Ansible Network Engine Show Interface Status Report"
-        body: "Attached is the Show Interface Status Report"
+        subject: "Ansible Network Engine Show Version Report"
+        body: "Attached is the Show Version Report"
         attach:
-        - reports/Consolidated_Interface_Report.html
+        - reports/Consolidated_Show_Version_Report.html
       delegate_to: localhost
       run_once: yes        

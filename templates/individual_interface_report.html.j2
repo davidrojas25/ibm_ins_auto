@@ -3,8 +3,8 @@
             <td>
                <ul>
 {% for port in port_facts[port] %}
-                  <li>{{ port_facts.config.value.port_name }}</li>
-                  <li>{{ port_facts.config.value.status }}</li>
+                  <li>{{ port_facts[port].config.value.port_name }}</li>
+                  <li>{{ port_facts[port].config.value.status }}</li>
 {% endfor %}
                </ul>
             </td>

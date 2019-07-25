@@ -30,6 +30,7 @@
         src: templates/individual_report_show_int.html.j2
         dest: "reports/z{{ inventory_hostname }}_interim_report.html"
       delegate_to: localhost
+      run_once: yes
 
     - name: Create Interim Report
       template:

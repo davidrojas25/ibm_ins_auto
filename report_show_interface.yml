@@ -30,8 +30,7 @@
         src: templates/individual_report_show_int.html.j2
         dest: "reports/z{{ inventory_hostname }}_interim_report.html"
       delegate_to: localhost
-      run_once: yes
-
+      
     - name: Create Interim Report
       template:
         src: consolidated_report_show_int.html.j2
@@ -39,12 +38,12 @@
       delegate_to: localhost
       run_once: yes
 
-    - name: Consolidate Interim Report
-      assemble:
-        src: reports/
-        dest: reports/Consolidated_Interface_Report.html
-      delegate_to: localhost
-      run_once: yes
+   # - name: Consolidate Interim Report
+   #   assemble:
+   #     src: reports/
+   #     dest: reports/Consolidated_Interface_Report.html
+   #   delegate_to: localhost
+   #   run_once: yes
 
     - name: Generate Remaining Portion of Report
       template:

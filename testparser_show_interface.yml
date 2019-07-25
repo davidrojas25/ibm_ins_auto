@@ -13,6 +13,7 @@
         commands:
           - show interfaces
       register: output
+      ignore_errors: True
 
     - name: PARSE THE RAW OUTPUT
       command_parser:

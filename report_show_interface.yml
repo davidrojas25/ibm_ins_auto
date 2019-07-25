@@ -60,6 +60,10 @@
       delegate_to: localhost
       run_once: yes
 
+    - name: debug list of reports
+      debug:
+        var: interim_reports_to_delete  
+
     - name: Clean Up Interim Reports
       file:
         path: "{{ item.path }}"

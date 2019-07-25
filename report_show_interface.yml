@@ -1,0 +1,97 @@
+---
+- name: GENERATE INTERFACE REPORT
+  hosts: rojaslab_network
+  gather_facts: no
+  connection: network_cli
+
+  vars:
+    gmail_account: "rojasautolab@gmail.com"
+    gmail_account_password: "Zapata99!"
+    sendto_email: "David Rojas <rojasautolab@gmail.com>"
+  
+  tasks:
+    - name: Clean Up Reports Directory if it exists
+      file:
+        path: reports
+        state: absent
+      delegate_to: localhost
+      run_once: yes
+
+    - name: Create Reports Directory
+      file:
+        path: reports
+        state: directory
+        mode: 0755
+      delegate_to: localhost
+      run_once: yes
+
+    - name: Template Rendering
+      template:
+        src: templates/individual_report_show_int.html.j2
+        dest: "reports/z{{ inventory_hostname }}_interim_report.html"
+      delegate_to: localhost
+
+    - name: Create Interim Report
+      template:
+        src: consolidated_report_show_int.html.j2
+        dest: "reports/Consolidated_report_show_int.html"
+      delegate_to: localhost
+      run_once: yes
+
+    - name: Consolidate Interim Report
+      assemble:
+        src: reports/
+        dest: reports/Consolidated_Interface_Report.html
+      delegate_to: localhost
+      run_once: yes
+
+    - name: Generate Remaining Portion of Report
+      template:
+        src: consolidated_show_int_last_block.html.j2
+        dest: "reports/consolidated_show_int_last_block.html"
+      delegate_to: localhost
+      run_once: yes
+
+    - name: Get the List of Interim Reports
+      find:
+        paths: reports/
+        patterns: '*_interim_report.html'
+      register: interim_reports_to_delete
+      delegate_to: localhost
+      run_once: yes
+
+    - name: Clean Up Interim Reports
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ interim_reports_to_delete.files }}"
+      delegate_to: localhost
+      run_once: yes
+
+    - name: Consolidate Final Report
+      assemble:
+        src: reports/
+        dest: reports/Consolidated_report_show_int.html
+      delegate_to: localhost
+      run_once: yes
+
+    - name: Final Clean Up
+      file:
+        path: reports/consolidated_show_int_last_block.html
+        state: absent
+      delegate_to: localhost
+      run_once: yes
+
+    - name: Send Email with Report
+      mail:
+        host: smtp.gmail.com
+        port: 587
+        username: "{{ gmail_account }}"
+        password: "{{ gmail_account_password }}"
+        to: "{{ sendto_email }}"
+        subject: "Ansible Network Engine Show Interface Status Report"
+        body: "Attached is the Show Interface Status Report"
+        attach:
+        - reports/Consolidated_report_show_int.html
+      delegate_to: localhost
+      run_once: yes        

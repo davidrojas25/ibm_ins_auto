@@ -1,0 +1,17 @@
+               
+{% for interface in interface_facts %}    
+    {% for name in interface %}   
+         <tr>     
+             <td> {{ inventory_hostname }} </td>     
+             <td> {{ interface[name].config.name }} </td>    
+             <td> {{ interface[name].config.description }} </td>
+             <td> {{ interface[name].config.status }} </td>    
+             <td> {{ interface[name].config.rxload }} </td>           
+             <td> {{ interface[name].config.txload }} </td>    
+             <td> {{ interface[name].config.output_errors }} </td>              
+         </tr>         
+    {% endfor %}                  
+{% endfor %}
+               
+            
+         </tr>

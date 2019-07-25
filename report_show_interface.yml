@@ -38,12 +38,12 @@
       delegate_to: localhost
       run_once: yes
 
-   # - name: Consolidate Interim Report
-   #   assemble:
-   #     src: reports/
-   #     dest: reports/Consolidated_Interface_Report.html
-   #   delegate_to: localhost
-   #   run_once: yes
+    - name: Consolidate Interim Report
+      assemble:
+        src: reports/
+        dest: reports/Consolidated_Interface_Report.html
+      delegate_to: localhost
+      run_once: yes
 
     - name: Generate Remaining Portion of Report
       template:
